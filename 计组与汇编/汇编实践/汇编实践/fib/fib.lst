@@ -1,0 +1,220 @@
+Microsoft (R) Macro Assembler Version 6.11		    11/28/22 08:21:41
+tempfile.asm						     Page 1 - 1
+
+
+ 0000				DATA segment
+ 0000 01			 result db 1d,24 dup (0)
+       0018 [
+        00
+       ]
+ 0019 01			 x db 1d,24 dup (0)
+       0018 [
+        00
+       ]
+				 
+ 0032 0D 0A 50 6C 65 61		 mess1 db 0dh,0ah,'Please choose a data from 1 to 100:','$'
+       73 65 20 63 68 6F
+       6F 73 65 20 61 20
+       64 61 74 61 20 66
+       72 6F 6D 20 31 20
+       74 6F 20 31 30 30
+       3A 24
+ 0058 0D 0A 20 54 68 65		 mess2 db 0dh ,0ah,' The result is :','$'
+       20 72 65 73 75 6C
+       74 20 69 73 20 3A
+       24
+ 006B 0D 0A 20 50 72 65		 mess3 db 0dh ,0ah,' Press Q to exit.','$' 
+       73 73 20 51 20 74
+       6F 20 65 78 69 74
+       2E 24
+ 007F 0000			 flag  dw ?
+ 0081 0D 0A 49 75 70 75		 mess4 db 0dh ,0ah,'Iuput error , please enter again.','$'
+       74 20 65 72 72 6F
+       72 20 2C 20 70 6C
+       65 61 73 65 20 65
+       6E 74 65 72 20 61
+       67 61 69 6E 2E 24
+ 00A5 0D 0A 65 78 69 74		 mess5 db 0dh ,0ah,'exit.','$'
+       2E 24
+ 00AD				DATA ends 
+
+ 0000				stack segment ;此处输入堆栈段代码
+ 0000  0080 [			 dW 128 dup (?)
+        0000
+       ]
+ 0100				stack ends
+				 
+ 0000				CODE segment 
+				 assume cs:CODE, ds:DATA, ss:stack, es : DATA
+ 0000				start :
+ 0000  1E			 push ds 
+ 0001  2B C0			 sub ax,ax
+ 0003  2B DB			 sub bx,bx
+ 0005  50			 push ax	
+ 0006  B8 ---- R		 mov ax , DATA 
+ 0009  8E D8			 mov ds , ax 
+ 000B  8E C0			 mov es , ax 
+ 000D  B8 ---- R		 mov ax , stack
+ 0010  8E D0			 mov ss , ax 
+
+ 0012				reinput :
+ 0012  50			 push ax 
+ 0013  53			 push bx
+ 0014  51			 push cx
+ 0015  52			 push dx
+ 0016  56			 push si
+ 0017  57			 push di
+ 0018  8D 16 006B R		 lea dx,mess3 
+ 001C  B4 09			 mov ah,09
+ 001E  CD 21			 int 21h          ;显示' Press Q to exit.'
+ 0020  8D 16 0032 R		 lea  dx,mess1
+ 0024  B4 09			 mov ah,09
+ 0026  CD 21			 int 21h          ;显示'Please choose a data from 1 to 100:'
+ 0028  BB 0000			 mov bx,0
+ 002B				input:     ;输入n,并转化为十进制数
+ 002B  B4 01			   mov ah,01
+ 002D  CD 21			   int 21h
+ 002F  3C 51			   cmp al,'Q'
+ 0031  74 20			   jz end1      ;若输入Q,则退出
+ 0033  3C 0D			   cmp al,0dh
+ 0035  74 29			   jz count      ;判断是否是回车(十进制数是否转化完成),进而开始计算fibonacci数
+ 0037  3C 30			   cmp al,'0'
+ 0039  72 0E			   jb  error
+ 003B  2C 30			   sub al,30h  
+ 003D  98			   cbw
+ 003E  93			   xchg ax,bx   
+ 003F  B9 000A			   mov cx ,10d
+ 0042  F7 E1			   mul cx 
+ 0044  93			   xchg ax,bx 
+ 0045  03 D8			   add bx,ax       ;将十六进制数转化为十进制数
+ 0047  EB E2			   jmp input 
+ 0049				error: ;输入出错  
+ 0049  8D 16 0081 R		   lea dx,mess4
+ 004D  B4 09			   mov ah,09 
+ 004F  CD 21			   int 21h
+ 0051  EB BF			   jmp reinput ;跳转回开始状态
+ 0053				end1:    ; 退出程序
+ 0053  8D 16 00A5 R		  lea dx,mess5
+ 0057  B4 09			  mov ah,09
+ 0059  CD 21			  int 21h       ;显示' You have typed Q to exit.'
+ 005B  B4 4C			  mov ah ,4ch
+ 005D  CD 21			  int 21h
+ 005F  C3			  ret 
+ 0060				count : 
+ 0060  8B CB			   mov cx,bx ;将输入的数放到 cx 中
+ 0062  83 F9 02			   cmp cx ,2
+ 0065  7E 36			   jle print ;如果小于等于2,就直接输出结果
+ 0067  83 E9 02			   sub cx ,2;否则以cx-2作为循环,将两数相加
+ 006A				next : 
+ 006A  8B F9			   mov di,cx 
+ 006C  B9 0019			   mov cx,25   ;循环次数
+ 006F  BE 0000			   mov si,0
+ 0072				add1 : 
+ 0072  8A 94 0019 R		   mov  dl,x[ si ]
+ 0076  8A B4 0000 R		   mov  dh,result[ si ]
+ 007A  02 D6			   add  dl,dh ;将两个存储单元的数中进行相加
+ 007C  88 94 0000 R		   mov  result[si],dl
+ 0080  88 B4 0019 R		   mov  x[si],dh ;将上次的相加结果放入x[si]中
+ 0084  80 FA 0A			   cmp   dl,10d
+ 0087  73 03			   jae   great ;如果大于10D
+ 0089  46			   inc   si 
+ 008A  EB 0B			   jmp goon 
+ 008C				great : 
+ 008C  80 AC 0000 R 0A		   sub   result[si],10d ;将尾数存入result[si]
+ 0091  46			   inc   si
+ 0092  80 84 0019 R 01		   add   x[si],1;高位加1 
+ 0097				goon :
+ 0097  E2 D9			   loop add1
+ 0099  8B CF			   mov cx,di 
+ 009B  E2 CD			   loop next 
+ 009D				print : 
+ 009D  8D 16 0058 R		    lea dx ,mess2  ;显示' The result is :'
+ 00A1  B4 09			    mov ah ,09
+ 00A3  CD 21			    int 21h
+ 00A5  B9 0019			    mov cx,25
+ 00A8  BE 0018			    mov si,24
+ 00AB				display1:
+ 00AB  83 3E 007F R 00		    cmp flag,0;标志位判断输出的高位是否为0
+ 00B0  75 0C			    jnz if_nz
+ 00B2  80 BC 0000 R 00		    cmp result [si],0
+ 00B7  74 10			    jz  if_z
+ 00B9  83 06 007F R 01		    add flag,1
+ 00BE				if_nz: 
+ 00BE  8A 94 0000 R		   mov  dl,result[si] ;以十进制输出
+ 00C2  80 C2 30			   add dl ,30h
+ 00C5  B4 02			   mov ah ,02h
+ 00C7  CD 21			   int 21h
+ 00C9				if_z: 
+ 00C9  4E			   dec si
+ 00CA  E2 DF			   loop display1
+ 00CC  C7 06 007F R 0000	   mov flag ,0  
+ 00D2  C6 06 0000 R 01		   mov result[0],1d
+ 00D7  C6 06 0019 R 01		   mov x[0],1d
+ 00DC  BE 0001			   mov si,1
+ 00DF  B9 0018			   mov cx,24      
+ 00E2				initial:  ;初始化
+ 00E2  C6 84 0000 R 00		   mov result[si],0
+ 00E7  C6 84 0019 R 00		   mov x[si],0
+ 00EC  83 C6 01			   add si,1
+ 00EF  E2 F1			   loop initial
+ 00F1  BE 0000			   mov si,0
+ 00F4  5F			   pop di
+ 00F5  5E			   pop si
+ 00F6  5A			   pop dx
+ 00F7  59			   pop cx
+ 00F8  5B			   pop bx
+ 00F9  58			   pop ax
+ 00FA  E9 FF15			   jmp reinput;跳转到开始状态
+				   
+ 00FD  B4 4C			   mov ah,4ch
+ 00FF  CD 21			   int 21h
+				  
+ 0101				 CODE ends
+				   end start
+
+
+Microsoft (R) Macro Assembler Version 6.11		    11/28/22 08:21:41
+tempfile.asm						     Symbols 2 - 1
+
+
+
+
+Segments and Groups:
+
+                N a m e                 Size     Length   Align   Combine Class
+
+CODE . . . . . . . . . . . . . .	16 Bit	 0101	  Para	  Private 
+DATA . . . . . . . . . . . . . .	16 Bit	 00AD	  Para	  Private 
+stack  . . . . . . . . . . . . .	16 Bit	 0100	  Para	  Private 
+
+
+Symbols:
+
+                N a m e                 Type     Value    Attr
+
+add1 . . . . . . . . . . . . . .	L Near	 0072	  CODE	
+count  . . . . . . . . . . . . .	L Near	 0060	  CODE	
+display1 . . . . . . . . . . . .	L Near	 00AB	  CODE	
+end1 . . . . . . . . . . . . . .	L Near	 0053	  CODE	
+error  . . . . . . . . . . . . .	L Near	 0049	  CODE	
+flag . . . . . . . . . . . . . .	Word	 007F	  DATA	
+goon . . . . . . . . . . . . . .	L Near	 0097	  CODE	
+great  . . . . . . . . . . . . .	L Near	 008C	  CODE	
+if_nz  . . . . . . . . . . . . .	L Near	 00BE	  CODE	
+if_z . . . . . . . . . . . . . .	L Near	 00C9	  CODE	
+initial  . . . . . . . . . . . .	L Near	 00E2	  CODE	
+input  . . . . . . . . . . . . .	L Near	 002B	  CODE	
+mess1  . . . . . . . . . . . . .	Byte	 0032	  DATA	
+mess2  . . . . . . . . . . . . .	Byte	 0058	  DATA	
+mess3  . . . . . . . . . . . . .	Byte	 006B	  DATA	
+mess4  . . . . . . . . . . . . .	Byte	 0081	  DATA	
+mess5  . . . . . . . . . . . . .	Byte	 00A5	  DATA	
+next . . . . . . . . . . . . . .	L Near	 006A	  CODE	
+print  . . . . . . . . . . . . .	L Near	 009D	  CODE	
+reinput  . . . . . . . . . . . .	L Near	 0012	  CODE	
+result . . . . . . . . . . . . .	Byte	 0000	  DATA	
+start  . . . . . . . . . . . . .	L Near	 0000	  CODE	
+x  . . . . . . . . . . . . . . .	Byte	 0019	  DATA	
+
+	   0 Warnings
+	   0 Errors

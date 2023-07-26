@@ -1,0 +1,218 @@
+Microsoft (R) Macro Assembler Version 6.11		    11/28/22 08:16:29
+tempfile.asm						     Page 1 - 1
+
+
+ 0000				DATAREA SEGMENT
+ 0000 45 6E 74 65 72 20		   mess1 db "Enter keyword:",'$'
+       6B 65 79 77 6F 72
+       64 3A 24
+ 000F 45 6E 74 65 72 20		   mess2 db "Enter sentence:",'$'
+       73 65 6E 74 65 6E
+       63 65 3A 24
+ 001F 4D 61 74 63 68 20		   mess3 db "Match at location:",'$'
+       61 74 20 6C 6F 63
+       61 74 69 6F 6E 3A
+       24
+ 0032 4E 6F 20 6D 61 74		   mess4 db "No match!",13,10,'$'
+       63 68 21 0D 0A 24
+ 003E 6D 61 74 63 68 0D		   mess5 db "match",13,10,'$'
+       0A 24
+ 0046 48 20 6F 66 20 74		   mess6 db "H of the sentence",13,10,'$'
+       68 65 20 73 65 6E
+       74 65 6E 63 65 0D
+       0A 24
+				   ;
+ 005A				   stok1 label byte
+ 005A 0A			   max1 db 10
+ 005B 00			   act1 db ?
+ 005C  000A [			   stocks1 db 10 dup(?)
+        00
+       ]
+				   ;
+ 0066				   stok2 label byte
+ 0066 32			   max2 db 50
+ 0067 00			   act2 db ?
+ 0068  0032 [			   stocks2 db 50 dup(?)
+        00
+       ]
+ 009A				DATAREA ENDS
+
+ 0000				PROGNAM segment
+				;
+
+ 0000				MAIN PROC FAR
+				     ASSUME CS:PROGNAM ,DS:DATAREA,ES:DATAREA
+ 0000				    start:
+ 0000  1E			     PUSH DS
+ 0001  2B C0			     SUB AX,AX
+ 0003  2B DB			     SUB BX,BX
+ 0005  50			     PUSH AX
+ 0006  B8 ---- R		     mov AX,DATAREA
+ 0009  8E D8			     MOV DS,AX
+ 000B  8E C0			     MOV ES,AX
+				     ;�˴���ʼ�����ַ����ĶԱ�
+				     ;����ʾ��һ�� �ؼ���
+ 000D  8D 16 0000 R		     lea dx,mess1
+ 0011  B4 09			    mov ah,09;ds:dx��ʾ�ַ���
+ 0013  CD 21			     int 21h
+ 0015  8D 16 005A R		     lea dx, stok1
+ 0019  B4 0A			     mov ah,0ah;ds:dx �������뵽������
+ 001B  CD 21			     int 21h
+ 001D  80 3E 005B R 00		     cmp act1,0
+ 0022  74 59			     je exit;���δ���뼴�ؼ���Ϊ��ʱֱ������?
+				    
+				    ;��ʱ��Ҫ�س�����
+ 0024				step1:  
+ 0024  E8 0085			    call crlf
+ 0027  8D 16 000F R		    lea dx,mess2
+ 002B  B4 09			    mov ah,09
+ 002D  CD 21			    int 21h
+ 002F  8D 16 0066 R		    lea dx,stok2
+ 0033  B4 0A			    mov ah,0ah
+ 0035  CD 21			    int 21h
+ 0037  80 3E 0067 R 00		    cmp act2,0
+ 003C  74 43			    je nomatch
+ 003E  A0 005B R		    mov al,act1
+ 0041  98			    cbw
+ 0042  8B C8			    mov cx,ax;cx��װ��act1��ֵ
+ 0044  51			    push cx;cx����Ҫ�Ƚϵ�keyword�ĳ��� 
+ 0045  A0 0067 R		    mov al,act2
+ 0048  FE C0			    inc al
+ 004A  2A 06 005B R		    sub al,act1;���������ַ�����С�ڹؼ�����϶�Ҳ��ƥ��?
+ 004E  78 31			    js nomatch;���Ϊ����ֱ��ת�Ƶ���ƥ��?
+ 0050  BF 0000			    mov di,0
+ 0053  BE 0000			    mov si,0
+ 0056  8D 1E 0068 R		    lea bx,stocks2
+				   
+				    
+ 005A				 step2:
+ 005A  8A 21			    mov ah,[bx+di]
+ 005C  3A A4 005C R		    cmp ah,stocks1[si]
+ 0060  75 0A			    jne step3
+ 0062  46			    inc si
+ 0063  47			    inc di
+ 0064  49			    dec cx
+ 0065  83 F9 00			    cmp cx,0
+ 0068  74 24			    je match
+ 006A  EB EE			    jmp step2;��δ�Ƚ���ͼ����Ƚ�?
+ 006C				 step3:
+ 006C  43			       inc bx;����һ���ַ����бȽ�
+ 006D  FE C8			       dec al
+ 006F  3C 00			       cmp al,0
+ 0071  74 0E			       je nomatch
+ 0073  BE 0000			       mov si,0
+ 0076  BF 0000			       mov di,0
+ 0079  59			       pop cx
+ 007A  51			       push cx
+				      ;��һ����Ϊ�ָ�cx��ֵ
+ 007B  EB DD			       jmp step2
+ 007D				  exit:
+ 007D  E8 002C			      call crlf
+ 0080  CB			      ret
+ 0081				  nomatch:
+ 0081  E8 0028			      call crlf
+ 0084  8D 16 0032 R		      lea dx,mess4
+ 0088  B4 09			      mov ah,09
+ 008A  CD 21			      int 21h
+ 008C  EB 96			      jmp step1;///////��������һ����Ҫ���ܺ��ؼ��ֵ��ַ���
+ 008E				  match:
+ 008E  E8 001B			      call crlf
+ 0091  8D 16 001F R		      lea dx,mess3
+ 0095  B4 09			       mov ah,09
+ 0097  CD 21			       int 21h
+ 0099  81 EB 0068 R		       sub bx,offset stocks2
+ 009D  43			       inc bx
+ 009E  E8 0018			       call trans;��ʱ��Ҫ���ж����Ƶ�ʮ�����Ƶ�ת��
+ 00A1  8D 16 0046 R		       lea dx,mess6
+ 00A5  B4 09			       mov ah,09
+ 00A7  CD 21			       int 21h
+ 00A9  E9 FF78			       jmp step1
+				       
+ 00AC				crlf proc near;�س�����
+ 00AC  B2 0D			          mov dl,0dh
+ 00AE  B4 02			          mov ah,2
+ 00B0  CD 21			          int 21h
+ 00B2  B2 0A			          mov dl,0ah
+ 00B4  B4 02			          mov ah,2
+ 00B6  CD 21			          int 21h
+ 00B8  C3			          ret
+ 00B9				crlf endp          
+				          
+ 00B9				 trans proc near;������ת��Ϊʮ������
+ 00B9  B5 04			   mov ch,4
+ 00BB				   rotate:
+ 00BB  B1 04			   mov cl,4
+ 00BD  D3 C3			   rol bx,cl
+ 00BF  8A C3			   mov al,bl
+ 00C1  24 0F			   and al,0fh
+ 00C3  04 30			   add al,30h
+ 00C5  3C 3A			   cmp al,3ah
+ 00C7  7C 02			   jl printit
+ 00C9  04 07			   add al,07h
+ 00CB				  printit:
+ 00CB  8A D0			       mov dl,al
+ 00CD  B4 02			       mov ah,2
+ 00CF  CD 21			       int 21h
+ 00D1  FE CD			       dec ch
+ 00D3  75 E6			       jnz rotate
+ 00D5  C3			       ret
+ 00D6				       trans endp
+ 00D6				       main endp
+ 00D6				       prognam ends 
+				       end main
+
+
+
+Microsoft (R) Macro Assembler Version 6.11		    11/28/22 08:16:29
+tempfile.asm						     Symbols 2 - 1
+
+
+
+
+Segments and Groups:
+
+                N a m e                 Size     Length   Align   Combine Class
+
+DATAREA  . . . . . . . . . . . .	16 Bit	 009A	  Para	  Private 
+PROGNAM  . . . . . . . . . . . .	16 Bit	 00D6	  Para	  Private 
+
+
+Procedures,  parameters and locals:
+
+                N a m e                 Type     Value    Attr
+
+MAIN . . . . . . . . . . . . . .	P Far	 0000	  PROGNAM	Length= 00D6 Public
+  start  . . . . . . . . . . . .	L Near	 0000	  PROGNAM	
+  step1  . . . . . . . . . . . .	L Near	 0024	  PROGNAM	
+  step2  . . . . . . . . . . . .	L Near	 005A	  PROGNAM	
+  step3  . . . . . . . . . . . .	L Near	 006C	  PROGNAM	
+  exit . . . . . . . . . . . . .	L Near	 007D	  PROGNAM	
+  nomatch  . . . . . . . . . . .	L Near	 0081	  PROGNAM	
+  match  . . . . . . . . . . . .	L Near	 008E	  PROGNAM	
+crlf . . . . . . . . . . . . . .	P Near	 00AC	  PROGNAM	Length= 000D Public
+trans  . . . . . . . . . . . . .	P Near	 00B9	  PROGNAM	Length= 001D Public
+  rotate . . . . . . . . . . . .	L Near	 00BB	  PROGNAM	
+  printit  . . . . . . . . . . .	L Near	 00CB	  PROGNAM	
+
+
+Symbols:
+
+                N a m e                 Type     Value    Attr
+
+act1 . . . . . . . . . . . . . .	Byte	 005B	  DATAREA	
+act2 . . . . . . . . . . . . . .	Byte	 0067	  DATAREA	
+max1 . . . . . . . . . . . . . .	Byte	 005A	  DATAREA	
+max2 . . . . . . . . . . . . . .	Byte	 0066	  DATAREA	
+mess1  . . . . . . . . . . . . .	Byte	 0000	  DATAREA	
+mess2  . . . . . . . . . . . . .	Byte	 000F	  DATAREA	
+mess3  . . . . . . . . . . . . .	Byte	 001F	  DATAREA	
+mess4  . . . . . . . . . . . . .	Byte	 0032	  DATAREA	
+mess5  . . . . . . . . . . . . .	Byte	 003E	  DATAREA	
+mess6  . . . . . . . . . . . . .	Byte	 0046	  DATAREA	
+stocks1  . . . . . . . . . . . .	Byte	 005C	  DATAREA	
+stocks2  . . . . . . . . . . . .	Byte	 0068	  DATAREA	
+stok1  . . . . . . . . . . . . .	Byte	 005A	  DATAREA	
+stok2  . . . . . . . . . . . . .	Byte	 0066	  DATAREA	
+
+	   0 Warnings
+	   0 Errors

@@ -1,0 +1,354 @@
+Microsoft (R) Macro Assembler Version 6.11		    01/11/22 21:13:13
+tempfile.asm						     Page 1 - 1
+
+
+				;先存够电话数，再开始显示查找
+ 0000				dataarea  segment 
+ 0000 50 6C 65 61 73 65		mess1    db    'Please input name:','$' 
+       20 69 6E 70 75 74
+       20 6E 61 6D 65 3A
+       24
+ 0013 50 6C 65 61 73 65		mess2    db    'Please input telephone number:','$' 
+       20 69 6E 70 75 74
+       20 74 65 6C 65 70
+       68 6F 6E 65 20 6E
+       75 6D 62 65 72 3A
+       24
+ 0032 44 6F 20 79 6F 75		mess3    db    'Do you want to search a telephone number?(y/n)','$' 
+       20 77 61 6E 74 20
+       74 6F 20 73 65 61
+       72 63 68 20 61 20
+       74 65 6C 65 70 68
+       6F 6E 65 20 6E 75
+       6D 62 65 72 3F 28
+       79 2F 6E 29 24
+ 0061 0D 0A 77 68 61 74		mess4    db    0dh,0ah,'what is the name?','$' 
+       20 69 73 20 74 68
+       65 20 6E 61 6D 65
+       3F 24
+ 0075 4E 6F 74 20 66 69		mess5    db    'Not find',0dh,0ah,'$' 
+       6E 64 0D 0A 24
+ 0080 74 68 65 20 6E 75		mess6    db    'the number you want to store:50',13,10,'$' 
+       6D 62 65 72 20 79
+       6F 75 20 77 61 6E
+       74 20 74 6F 20 73
+       74 6F 72 65 3A 35
+       30 0D 0A 24
+ 00A2 0D 0A 24			crlf     db     0dh,0ah,'$' 
+
+
+ 00A5				ArrayName  label  byte                       ;接收名字输入
+ 00A5 15			max1      db     21
+ 00A6 00			act1      db     ?
+ 00A7  0015 [			Name_char    db     21 dup(?)
+        00
+       ]
+				                                             
+ 00BC				ArrayTel  label  word                        ;接收电话号码输入
+ 00BC 09			max2      db     9
+ 00BD 00			act2      db     ?
+ 00BE  0009 [			Telchar   db    9 dup(?)
+        00
+       ]
+				 
+ 00C7  0032 [			Tel_Tab   db     50 dup(28 dup(?))      ;字符串和人名的表，在附加段
+        001C [
+	 00
+	]
+       ]
+
+ 063F 00			count    db 0
+ 0640 0000			name_count dw    0
+ 0642 0000			endAddress   dw  ?
+ 0644 0000			swapped   dw     ?                      ;交换位swapped来判断是否结束排序
+ 0646 0032			TotalNumber dw   50
+ 0648  001C [			tempSave    db   28 dup(?),0dh,0ah,'$'  ;暂存Tel_Tab的一项
+        00
+       ] 0D 0A 24
+ 0667 0000			FindAdd dw    ?
+ 0669 00			flag      db     ?
+ 066A 6E 61 6D 65 20 20		show      db     'name                phone',0dh,0ah,'$' ;显示
+       20 20 20 20 20 20
+       20 20 20 20 20 20
+       20 20 70 68 6F 6E
+       65 0D 0A 24
+ 0686				dataarea  ends
+				;
+ 0000				codesg  segment
+				   assume ds:dataarea,cs:codesg,es:dataarea
+ 0000				main    proc    far
+ 0000  B8 ---- R		       mov ax,dataarea 
+ 0003  8E D8			       mov ds,ax 
+ 0005  8E C0			       mov es,ax 
+ 0007  8D 3E 00C7 R		       lea di,Tel_Tab     ;将空字符串和电话号码数组放入 
+ 000B  8D 16 0080 R		       lea dx,mess6        ;显示信息，请输入想存入的电话号码总个数 50
+ 000F  B4 09			       mov ah,09   
+ 0011  CD 21			       int 21h             ;OUTPUT DX
+ 0013				 Mstep1:                              
+ 0013  8D 16 0000 R		       lea dx,mess1                 ;显示请输入名字
+ 0017  B4 09			       mov ah,09 
+ 0019  CD 21			       int 21h 
+ 001B  E8 0054			       call input_name              ;输入名字 
+ 001E  FF 06 0640 R		       inc  name_count              ;名字数++
+ 0022  E8 0071			       call stor_name               ;把名字存入存储空间
+ 0025  8D 16 0013 R		       lea dx,mess2                 ;显示请输入电话
+ 0029  B4 09			       mov ah,09 
+ 002B  CD 21			       int 21h 
+ 002D  E8 0070			       call input_Tel                 ;输入号码
+ 0030  E8 0091			       call stor_phone              ;存储号码 
+ 0033  83 3E 0640 R 00		       cmp  name_count,0   
+ 0038  74 33			       je  exit 
+ 003A  8B 1E 0646 R		       mov bx,TotalNumber           ;号码总数存入BX
+ 003E  39 1E 0640 R		       cmp  name_count,bx           ;输入50组的姓名，电话，来手动循环
+ 0042  75 CF			       jnz  Mstep1 
+ 0044  E8 0087			       call name_sort 
+ 0047				 Mstep2:
+ 0047  8D 16 0032 R		       lea dx,mess3                  ;显示是否需要查找电话号码
+ 004B  B4 09			       mov ah,09 
+ 004D  CD 21			       int 21h
+ 004F  B4 08			       mov ah,08                     ;键盘输入x或y进行选择，无回显，AL=输入字符
+ 0051  CD 21			       int 21h
+ 0053  3C 79			       cmp al,'y'
+ 0055  74 06			       jz  Mstep3
+ 0057  3C 6E			       cmp al,'n'
+ 0059  74 12			       jz  exit
+ 005B  EB EA			       jmp Mstep2                          
+ 005D				 Mstep3:
+ 005D  B4 09			       mov ah,09
+ 005F  8D 16 0061 R		       lea dx,mess4                  ;显示询问名字
+ 0063  CD 21			       int 21h                       ;搜索前输入要搜索的名字
+ 0065  E8 000A			       call input_name      
+ 0068				 Mstep4:
+ 0068  E8 00B5			       call FindName              ;开始搜索
+ 006B  EB DA			       jmp Mstep2                    
+ 006D				 exit:
+ 006D  B8 4C00			       mov ax,4c00h            ;返回终止
+ 0070  CD 21			       int 21h
+ 0072				 main endp
+				;--------------------------------------------------------------------
+ 0072				input_name  proc  near
+ 0072  B4 0A			     mov ah,0ah
+ 0074  8D 16 00A5 R		     lea dx,ArrayName       ;将名字数组地址到DX
+ 0078  CD 21			     int 21h
+ 007A  B4 09			     mov ah,09              ;输入名字
+ 007C  8D 16 00A2 R		     lea dx,crlf            ;回车换行
+ 0080  CD 21			     int 21h
+ 0082  2A FF			     sub bh,bh              ;bh清零,BL存长度
+ 0084  8A 1E 00A6 R		     mov bl,act1            ;两个16进制位能存下ACT1
+ 0088  B9 0015			     mov cx,21
+ 008B  2B CB			     sub cx,bx              ;CX=CX-BX为空缺部分,CX为计数器
+ 008D				b10:
+ 008D  C6 87 00A7 R 20		     mov Name_char[bx],' '   ;补全空格
+ 0092  43			     inc bx
+ 0093  E2 F8			     loop b10
+ 0095  C3			    ret
+ 0096				input_name endp
+				;--------------------------------------------------------------------
+ 0096				stor_name     proc   near
+ 0096  8D 36 00A7 R		      lea  si,Name_char
+ 009A  B9 0014			      mov  cx,20
+ 009D  F3/ A4			      rep  movsb ;movsb指令用于把字节从ds:si 搬到es:di附加段；rep是repeat的意思，rep movsb 就是多次搬运。
+				                 ;搬运前先把字符串的长度存在cx寄存器中，然后重复的次数就是cx寄存器所存数据的值。
+ 009F  C3			      ret
+ 00A0				stor_name  endp
+				;--------------------------------------------------------------------
+ 00A0				input_Tel   proc   near
+ 00A0  B4 0A			     mov ah,0ah 
+ 00A2  8D 16 00BC R		     lea dx,ArrayTel 
+ 00A6  CD 21			     int 21h 
+ 00A8  B4 09			     mov ah,09         ;输电话号码
+ 00AA  8D 16 00A2 R		     lea dx,crlf       ;换行回车
+ 00AE  CD 21			     int 21h 
+ 00B0  2A FF			     sub bh,bh         ;原理同存储，名字
+ 00B2  8A 1E 00BD R		     mov bl,act2 
+ 00B6  B9 0009			     mov cx,9  
+ 00B9  2B CB			     sub cx,bx 
+ 00BB				c10:
+ 00BB  C6 87 00BE R 20		     mov Telchar[bx],' ' ;补充空格
+ 00C0  43			     inc bx              ;
+ 00C1  E2 F8			     loop c10
+ 00C3  C3			     ret 
+ 00C4				input_Tel endp
+				;--------------------------------------------------------------------
+ 00C4				stor_phone  proc near
+ 00C4  8D 36 00BE R		     lea  si,Telchar
+ 00C8  B9 0008			     mov  cx,8
+ 00CB  F3/ A4			     rep  movsb   ;movs 串传送指令 cmps 串比较操作
+ 00CD  C3			     ret
+ 00CE				stor_phone endp
+				;--------------------------------------------------------------------
+ 00CE				name_sort  proc near        ;冒泡法排序名+电话号码，按升序
+ 00CE  83 EF 1C			     sub  di,28             ;此时DI指向最后一个字符串的首地址
+ 00D1  89 3E 0642 R		     mov  endAddress,di        ;DI-28->结束地址
+ 00D5				 c1:
+ 00D5  C7 06 0644 R 0000	     mov  swapped,0            ;swap从0开始
+ 00DB  8D 36 00C7 R		     lea  si,Tel_Tab 
+ 00DF				 c2: 
+ 00DF  B9 0014			     mov  cx,20 
+ 00E2  8B FE			     mov  di,si 
+ 00E4  83 C7 1C			     add  di,28   ;现在DI=表地址+28也就是下一组号码名字  ，SI和DI作为两个变址指针，指向ES段
+ 00E7  8B C7			     mov  ax,di 
+ 00E9  8B DE			     mov  bx,si   ;cmpsb si-di  movsb di<-si
+ 00EB  F3/ A6			     repz cmpsb   ;repz 当为0时重复串操作；
+ 00ED  76 21			     jbe  if_Loop ;CF或ZF=1，小于等于则转移
+				                ;repz是一个串操作前缀，它重复串操作指令，每重复一次ECX的值就减一
+				                ;一直到CX为0或ZF为0时停止。
+				                ;大于则交换位置
+ 00EF  8B F3			     mov si,bx    
+ 00F1  8D 3E 0648 R		     lea di,tempSave ;DI指向TempSave
+ 00F5  B9 001C			     mov cx,28
+ 00F8  F3/ A4			     rep movsb       ;转移到tempSave先
+ 00FA  B9 001C			     mov cx,28                   ;从ds:si 搬到es:di附加段
+ 00FD  8B FB			     mov di,bx       ;DI指向BX
+ 00FF  F3/ A4			     rep movsb       ;搬到BX
+ 0101  B9 001C			     mov cx,28
+ 0104  8D 36 0648 R		     lea si,tempSave 
+ 0108  F3/ A4			     rep movsb       ;tempSave搬回去
+ 010A  C7 06 0644 R 0001	     mov swapped,1
+ 0110				 if_Loop:
+ 0110  8B F0			     mov  si,ax
+ 0112  3B 36 0642 R		     cmp  si,endAddress ;看看有没有比完（一轮的从头到尾）
+ 0116  72 C7			     jb   c2            ;小于则CF=1，则转移，
+ 0118  83 3E 0644 R 00		     cmp  swapped,0      ;CMP - 如果这两个值相等，则Z标志被设置为（1），否则它没有被设置（0）
+ 011D  75 B6			     jnz  c1             ;结果不为0则转移
+ 011F  C3			     ret 
+ 0120				name_sort endp
+				;--------------------------------------------------------------------
+ 0120				FindName proc near
+ 0120  8D 1E 00C7 R		      lea  bx,Tel_Tab
+ 0124  C6 06 0669 R 00			mov  flag,0      
+ 0129				   dStep1: 
+ 0129  B9 0014			      mov  cx,20 
+ 012C  8D 36 00A7 R			lea si,Name_char 
+ 0130  8B FB			      mov  di,bx            ;补空格为了方便搜索和比较
+ 0132  F3/ A6			      repz cmpsb            ;BX存着表
+ 0134  74 1A			      jz  Found
+ 0136  83 C3 1C			      add bx,28             ;指向下一条看看还有没有
+ 0139  3B 1E 0642 R		      cmp  bx,endAddress    ;endAress是表尾指针 
+ 013D  76 EA			      jbe  dStep1           ;没到尾部未结束，继续找
+ 013F  80 2E 0669 R 00			sub flag,0            ;要是没有找到的话
+ 0144  74 02			      jz NotFound
+ 0146  EB 20			      jmp  dexit            ;结束，退出
+ 0148				  NotFound:  
+ 0148  8D 16 0075 R		      lea dx,mess5
+ 014C  B4 09			      mov ah,09
+ 014E  CD 21			      int 21h 
+ 0150				  Found:
+ 0150  89 1E 0667 R		      mov FindAdd,bx       ;  BX对应找到的地址给FindAdd
+ 0154  FE 06 0669 R			inc flag
+ 0158  E8 000E				call printf
+ 015B  83 C3 1C				add bx,28            ;下一条
+ 015E  3B 1E 0642 R		      cmp  bx,endAddress   ;是否结束？
+ 0162  76 C5			      jbe  dStep1          ;未结束，继续找
+ 0164  EB 02			      jmp  dexit           ;结束，退出
+ 0166  75 C1			      jnz  dStep1
+ 0168				 dexit:
+ 0168  C3			        ret
+ 0169				FindName endp
+				;--------------------------------------------------------------------
+ 0169				printf proc  near
+ 0169  80 2E 0669 R 00		       sub flag,0     ;要是没有找到的话，跳到Notfind
+ 016E  74 1F			       jz  Nofind
+
+ 0170				 pStep:
+ 0170  B4 09			       mov ah,09
+ 0172  8D 16 066A R		       lea dx,show
+ 0176  CD 21			       int 21h
+ 0178  B9 001C			       mov cx,28
+ 017B  8B 36 0667 R		       mov si,FindAdd
+ 017F  8D 3E 0648 R		       lea di,tempSave
+ 0183  F3/ A4			       rep movsb
+ 0185  8D 16 0648 R		       lea dx,tempSave
+ 0189  B4 09			       mov ah,09
+ 018B  CD 21			       int 21h
+ 018D  EB 08			       jmp FinalExit
+
+ 018F				Nofind:    
+ 018F  8D 16 0075 R		       lea dx,mess5
+ 0193  B4 09			       mov ah,09
+ 0195  CD 21			       int 21h 
+ 0197				FinalExit:  
+ 0197  C3			       ret
+ 0198				printf endp
+
+ 0198				codesg ends
+
+				end main       
+
+Microsoft (R) Macro Assembler Version 6.11		    01/11/22 21:13:13
+tempfile.asm						     Symbols 2 - 1
+
+
+
+
+Segments and Groups:
+
+                N a m e                 Size     Length   Align   Combine Class
+
+codesg . . . . . . . . . . . . .	16 Bit	 0198	  Para	  Private 
+dataarea . . . . . . . . . . . .	16 Bit	 0686	  Para	  Private 
+
+
+Procedures,  parameters and locals:
+
+                N a m e                 Type     Value    Attr
+
+FindName . . . . . . . . . . . .	P Near	 0120	  codesg	Length= 0049 Public
+  dStep1 . . . . . . . . . . . .	L Near	 0129	  codesg	
+  NotFound . . . . . . . . . . .	L Near	 0148	  codesg	
+  Found  . . . . . . . . . . . .	L Near	 0150	  codesg	
+  dexit  . . . . . . . . . . . .	L Near	 0168	  codesg	
+input_Tel  . . . . . . . . . . .	P Near	 00A0	  codesg	Length= 0024 Public
+  c10  . . . . . . . . . . . . .	L Near	 00BB	  codesg	
+input_name . . . . . . . . . . .	P Near	 0072	  codesg	Length= 0024 Public
+  b10  . . . . . . . . . . . . .	L Near	 008D	  codesg	
+main . . . . . . . . . . . . . .	P Far	 0000	  codesg	Length= 0072 Public
+  Mstep1 . . . . . . . . . . . .	L Near	 0013	  codesg	
+  Mstep2 . . . . . . . . . . . .	L Near	 0047	  codesg	
+  Mstep3 . . . . . . . . . . . .	L Near	 005D	  codesg	
+  Mstep4 . . . . . . . . . . . .	L Near	 0068	  codesg	
+  exit . . . . . . . . . . . . .	L Near	 006D	  codesg	
+name_sort  . . . . . . . . . . .	P Near	 00CE	  codesg	Length= 0052 Public
+  c1 . . . . . . . . . . . . . .	L Near	 00D5	  codesg	
+  c2 . . . . . . . . . . . . . .	L Near	 00DF	  codesg	
+  if_Loop  . . . . . . . . . . .	L Near	 0110	  codesg	
+printf . . . . . . . . . . . . .	P Near	 0169	  codesg	Length= 002F Public
+  pStep  . . . . . . . . . . . .	L Near	 0170	  codesg	
+  Nofind . . . . . . . . . . . .	L Near	 018F	  codesg	
+  FinalExit  . . . . . . . . . .	L Near	 0197	  codesg	
+stor_name  . . . . . . . . . . .	P Near	 0096	  codesg	Length= 000A Public
+stor_phone . . . . . . . . . . .	P Near	 00C4	  codesg	Length= 000A Public
+
+
+Symbols:
+
+                N a m e                 Type     Value    Attr
+
+ArrayName  . . . . . . . . . . .	Byte	 00A5	  dataarea	
+ArrayTel . . . . . . . . . . . .	Word	 00BC	  dataarea	
+FindAdd  . . . . . . . . . . . .	Word	 0667	  dataarea	
+Name_char  . . . . . . . . . . .	Byte	 00A7	  dataarea	
+Tel_Tab  . . . . . . . . . . . .	Byte	 00C7	  dataarea	
+Telchar  . . . . . . . . . . . .	Byte	 00BE	  dataarea	
+TotalNumber  . . . . . . . . . .	Word	 0646	  dataarea	
+act1 . . . . . . . . . . . . . .	Byte	 00A6	  dataarea	
+act2 . . . . . . . . . . . . . .	Byte	 00BD	  dataarea	
+count  . . . . . . . . . . . . .	Byte	 063F	  dataarea	
+crlf . . . . . . . . . . . . . .	Byte	 00A2	  dataarea	
+endAddress . . . . . . . . . . .	Word	 0642	  dataarea	
+flag . . . . . . . . . . . . . .	Byte	 0669	  dataarea	
+max1 . . . . . . . . . . . . . .	Byte	 00A5	  dataarea	
+max2 . . . . . . . . . . . . . .	Byte	 00BC	  dataarea	
+mess1  . . . . . . . . . . . . .	Byte	 0000	  dataarea	
+mess2  . . . . . . . . . . . . .	Byte	 0013	  dataarea	
+mess3  . . . . . . . . . . . . .	Byte	 0032	  dataarea	
+mess4  . . . . . . . . . . . . .	Byte	 0061	  dataarea	
+mess5  . . . . . . . . . . . . .	Byte	 0075	  dataarea	
+mess6  . . . . . . . . . . . . .	Byte	 0080	  dataarea	
+name_count . . . . . . . . . . .	Word	 0640	  dataarea	
+show . . . . . . . . . . . . . .	Byte	 066A	  dataarea	
+swapped  . . . . . . . . . . . .	Word	 0644	  dataarea	
+tempSave . . . . . . . . . . . .	Byte	 0648	  dataarea	
+
+	   0 Warnings
+	   0 Errors

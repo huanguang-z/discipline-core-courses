@@ -1,0 +1,188 @@
+Microsoft (R) Macro Assembler Version 6.11		    11/28/22 08:17:57
+tempfile.asm						     Page 1 - 1
+
+
+ 0000				DATAS SEGMENT
+ 0000 73 74 72 69 6E 67		    mess db "string?",13,10,'$'
+       3F 0D 0A 24
+ 000A 74 68 65 20 6E 75		    mess1 db "the number of the letter is:",'$'
+       6D 62 65 72 20 6F
+       66 20 74 68 65 20
+       6C 65 74 74 65 72
+       20 69 73 3A 24
+ 0027 74 68 65 20 6E 75		    mess2 db "the number of the digit is:",'$'
+       6D 62 65 72 20 6F
+       66 20 74 68 65 20
+       64 69 67 69 74 20
+       69 73 3A 24
+ 0043 74 68 65 20 6E 75		    mess3 db "the number of the other is:",'$'
+       6D 62 65 72 20 6F
+       66 20 74 68 65 20
+       6F 74 68 65 72 20
+       69 73 3A 24
+ 005F 0000			    letter dw 0 
+ 0061 0000			    digit dw 0
+ 0063 0000			    other dw 0
+ 0065				 string label byte;初始化输入缓冲区
+ 0065 51			    max db 81
+ 0066 00			    act db ?
+ 0067  0051 [			    char db 81 dup(?)
+        00
+       ]
+ 00B8				    DATAS ends
+				   
+ 0000				CODES SEGMENT
+ 0000				main proc far
+				    ASSUME CS:CODES,DS:DATAS
+ 0000				START:
+ 0000  B8 ---- R		    MOV AX,DATAS
+ 0003  8E D8			    MOV DS,AX
+ 0005  C7 06 005F R 0000	   MOV letter,0
+ 000B  C7 06 0061 R 0000	   mov digit,0
+ 0011  C7 06 0063 R 0000	   mov other,0
+ 0017  8D 16 0000 R		   lea dx,mess
+ 001B  B4 09			   mov ah,09
+ 001D  CD 21			   int 21h
+ 001F  8D 16 0065 R		   lea dx,string
+ 0023  B4 0A			   mov ah,0ah
+ 0025  CD 21			   int 21h;输入需要统计的字符串
+ 0027  B2 0D			   mov dl,13
+ 0029  B4 02			   mov ah,02
+ 002B  CD 21			   int 21h
+ 002D  B2 0A			   mov dl,10
+ 002F  B4 02			   mov ah,02
+ 0031  CD 21			   int 21h;回车换行
+ 0033  8D 36 0067 R		   lea si,char
+ 0037  2B C9			   sub cx,cx
+ 0039  2B C0			   sub ax,ax
+ 003B  8A 0E 0066 R		   mov cl,act
+ 003F				 compare:
+ 003F  8A 04			     mov al,[si]
+ 0041  3C 30			     cmp al,48
+ 0043  7C 1C			     jl oth
+ 0045  3C 39			     cmp al,57;大于0且小于9
+ 0047  7E 1E			     jle dig
+ 0049  3C 41			     cmp al,65
+ 004B  7C 14			     jl oth
+ 004D  3C 5A			     cmp al,90
+ 004F  7E 0A			     jle let
+ 0051  3C 61			     cmp al,97
+ 0053  7C 0C			     jl oth
+ 0055  3C 7A			     cmp al,122
+ 0057  7E 02			     jle let
+ 0059  EB 06			     jmp oth
+ 005B				 let:
+ 005B  FF 06 005F R		       inc letter
+ 005F  EB 0C			       jmp loopandprint
+ 0061				 oth:
+ 0061  FF 06 0063 R		       inc other
+ 0065  EB 06			       jmp loopandprint
+ 0067				 dig:
+ 0067  FF 06 0061 R		      inc digit
+ 006B  EB 00			      jmp loopandprint
+ 006D				 loopandprint:
+ 006D  46			       inc si
+ 006E  E2 CF			       loop compare
+ 0070  8D 16 000A R		       lea dx,mess1
+ 0074  B4 09			       mov ah,09h
+ 0076  CD 21			       int 21h
+ 0078  A1 005F R		       mov ax,letter
+ 007B  8A D0			       mov dl,al
+ 007D  80 C2 30			       add dl,30h
+ 0080  B4 02			       mov ah,02h
+ 0082  CD 21			       int 21h
+ 0084  B2 0D			       mov dl,13
+ 0086  B4 02			       mov ah,02h
+ 0088  CD 21			       int 21h
+ 008A  B2 0A			       mov dl,10
+ 008C  B4 02			       mov ah,02h
+ 008E  CD 21			       int 21h;回车换行
+				       
+ 0090  8D 16 0027 R		       lea dx,mess2
+ 0094  B4 09			       mov ah,09h
+ 0096  CD 21			       int 21h
+ 0098  A1 0061 R		       mov ax,digit
+ 009B  8A D0			       mov dl,al
+ 009D  80 C2 30			       add dl,30h
+ 00A0  B4 02			       mov ah,02h
+ 00A2  CD 21			       int 21h
+ 00A4  B2 0D			       mov dl,13
+ 00A6  B4 02			   mov ah,02h
+ 00A8  CD 21			   int 21h
+ 00AA  B2 0A			   mov dl,10
+ 00AC  B4 02			   mov ah,02h
+ 00AE  CD 21			   int 21h;回车换行
+				       
+ 00B0  8D 16 0043 R		       lea dx,mess3
+ 00B4  B4 09			       mov ah,09h
+ 00B6  CD 21			       int 21h
+ 00B8  A1 0063 R		       mov ax,other
+ 00BB  8A D0			       mov dl,al
+ 00BD  80 C2 30			       add dl,30h
+ 00C0  B4 02			       mov ah,02h
+ 00C2  CD 21			       int 21h
+ 00C4  B2 0D			       mov dl,13
+ 00C6  B4 02			   mov ah,02
+ 00C8  CD 21			   int 21h
+ 00CA  B2 0A			   mov dl,10
+ 00CC  B4 02			   mov ah,02
+ 00CE  CD 21			   int 21h;回车换行
+				       
+ 00D0  B4 4C			       MOV AH,4CH
+ 00D2  CD 21			       INT 21H;
+ 00D4				  exit:
+ 00D4  CB			         ret
+ 00D5				 main endp
+ 00D5				CODES ENDS
+				    END MAIN
+				   
+				    
+
+
+
+Microsoft (R) Macro Assembler Version 6.11		    11/28/22 08:17:57
+tempfile.asm						     Symbols 2 - 1
+
+
+
+
+Segments and Groups:
+
+                N a m e                 Size     Length   Align   Combine Class
+
+CODES  . . . . . . . . . . . . .	16 Bit	 00D5	  Para	  Private 
+DATAS  . . . . . . . . . . . . .	16 Bit	 00B8	  Para	  Private 
+
+
+Procedures,  parameters and locals:
+
+                N a m e                 Type     Value    Attr
+
+main . . . . . . . . . . . . . .	P Far	 0000	  CODES	Length= 00D5 Public
+  START  . . . . . . . . . . . .	L Near	 0000	  CODES	
+  compare  . . . . . . . . . . .	L Near	 003F	  CODES	
+  let  . . . . . . . . . . . . .	L Near	 005B	  CODES	
+  oth  . . . . . . . . . . . . .	L Near	 0061	  CODES	
+  dig  . . . . . . . . . . . . .	L Near	 0067	  CODES	
+  loopandprint . . . . . . . . .	L Near	 006D	  CODES	
+  exit . . . . . . . . . . . . .	L Near	 00D4	  CODES	
+
+
+Symbols:
+
+                N a m e                 Type     Value    Attr
+
+act  . . . . . . . . . . . . . .	Byte	 0066	  DATAS	
+char . . . . . . . . . . . . . .	Byte	 0067	  DATAS	
+digit  . . . . . . . . . . . . .	Word	 0061	  DATAS	
+letter . . . . . . . . . . . . .	Word	 005F	  DATAS	
+max  . . . . . . . . . . . . . .	Byte	 0065	  DATAS	
+mess1  . . . . . . . . . . . . .	Byte	 000A	  DATAS	
+mess2  . . . . . . . . . . . . .	Byte	 0027	  DATAS	
+mess3  . . . . . . . . . . . . .	Byte	 0043	  DATAS	
+mess . . . . . . . . . . . . . .	Byte	 0000	  DATAS	
+other  . . . . . . . . . . . . .	Word	 0063	  DATAS	
+string . . . . . . . . . . . . .	Byte	 0065	  DATAS	
+
+	   0 Warnings
+	   0 Errors
