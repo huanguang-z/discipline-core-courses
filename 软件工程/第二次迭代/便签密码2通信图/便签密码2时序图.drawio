@@ -1,0 +1,122 @@
+<mxfile host="Electron" modified="2023-11-25T13:30:33.093Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/22.1.2 Chrome/114.0.5735.289 Electron/25.9.4 Safari/537.36" etag="Mohkf146RYVY7n3covDW" version="22.1.2" type="device">
+  <diagram name="Page-1" id="13e1069c-82ec-6db2-03f1-153e76fe0fe0">
+    <mxGraphModel dx="1658" dy="868" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" background="none" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="7baba1c4bc27f4b0-2" value="&lt;font style=&quot;font-size: 11px;&quot;&gt;:NoteListActivity&lt;/font&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;rounded=1;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12;align=center;" parent="1" vertex="1">
+          <mxGeometry x="240" y="80" width="100" height="580" as="geometry" />
+        </mxCell>
+        <mxCell id="7baba1c4bc27f4b0-10" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12;align=center;" parent="7baba1c4bc27f4b0-2" vertex="1">
+          <mxGeometry x="45" y="100" width="10" height="390" as="geometry" />
+        </mxCell>
+        <mxCell id="7baba1c4bc27f4b0-3" value=":WorkingNote" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;rounded=1;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12;align=center;" parent="1" vertex="1">
+          <mxGeometry x="400" y="80" width="100" height="580" as="geometry" />
+        </mxCell>
+        <mxCell id="7baba1c4bc27f4b0-13" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12;align=center;" parent="7baba1c4bc27f4b0-3" vertex="1">
+          <mxGeometry x="45" y="120" width="10" height="230" as="geometry" />
+        </mxCell>
+        <mxCell id="7baba1c4bc27f4b0-4" value=":Notes" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;rounded=1;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12;align=center;" parent="1" vertex="1">
+          <mxGeometry x="540" y="80" width="100" height="580" as="geometry" />
+        </mxCell>
+        <mxCell id="7baba1c4bc27f4b0-8" value=":用户" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;rounded=1;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12;align=center;" parent="1" vertex="1">
+          <mxGeometry x="100" y="80" width="100" height="580" as="geometry" />
+        </mxCell>
+        <mxCell id="7baba1c4bc27f4b0-9" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12;align=center;" parent="7baba1c4bc27f4b0-8" vertex="1">
+          <mxGeometry x="45" y="100" width="10" height="440" as="geometry" />
+        </mxCell>
+        <mxCell id="7baba1c4bc27f4b0-16" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12;align=center;" parent="1" vertex="1">
+          <mxGeometry x="585" y="220" width="10" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="7baba1c4bc27f4b0-17" value="获取密码" style="html=1;verticalAlign=bottom;endArrow=block;labelBackgroundColor=none;fontFamily=Verdana;fontSize=12;edgeStyle=elbowEdgeStyle;elbow=vertical;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="454.9999999999998" y="290" as="sourcePoint" />
+            <Array as="points">
+              <mxPoint x="460" y="290" />
+            </Array>
+            <mxPoint x="584.9999999999998" y="290" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="7baba1c4bc27f4b0-11" value="点击锁定的便签图标" style="html=1;verticalAlign=bottom;endArrow=block;entryX=0;entryY=0;labelBackgroundColor=none;fontFamily=Verdana;fontSize=12;edgeStyle=elbowEdgeStyle;elbow=vertical;" parent="1" source="7baba1c4bc27f4b0-9" target="7baba1c4bc27f4b0-10" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="220" y="190" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="7baba1c4bc27f4b0-14" value="传递密码" style="html=1;verticalAlign=bottom;endArrow=block;labelBackgroundColor=none;fontFamily=Verdana;fontSize=12;edgeStyle=elbowEdgeStyle;elbow=vertical;exitX=1.033;exitY=0.826;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.033;entryY=0.743;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="295.3299999999999" y="280" as="sourcePoint" />
+            <mxPoint x="445.3299999999999" y="280.90999999999997" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="hQoyNFzlhYNVf_70PO75-2" value="便签密码2" style="shape=umlFrame;whiteSpace=wrap;html=1;pointerEvents=0;" parent="1" vertex="1">
+          <mxGeometry x="40" y="30" width="620" height="640" as="geometry" />
+        </mxCell>
+        <mxCell id="hQoyNFzlhYNVf_70PO75-7" value="" style="endArrow=classic;html=1;rounded=0;exitX=-0.105;exitY=0.175;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.895;entryY=0.091;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="283.94999999999993" y="210.21" as="sourcePoint" />
+            <mxPoint x="153.94999999999993" y="209.99999999999997" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="hQoyNFzlhYNVf_70PO75-8" value="弹出密码输入窗口" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="hQoyNFzlhYNVf_70PO75-7" vertex="1" connectable="0">
+          <mxGeometry x="0.1941" relative="1" as="geometry">
+            <mxPoint x="14" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="hQoyNFzlhYNVf_70PO75-13" value="" style="endArrow=classic;html=1;rounded=0;exitX=1.048;exitY=0.293;exitDx=0;exitDy=0;exitPerimeter=0;entryX=-0.016;entryY=0.561;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="155.48000000000002" y="249.99999999999994" as="sourcePoint" />
+            <mxPoint x="284.84000000000003" y="250.11000000000007" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="hQoyNFzlhYNVf_70PO75-14" value="输入密码" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="hQoyNFzlhYNVf_70PO75-13" vertex="1" connectable="0">
+          <mxGeometry x="0.2394" y="-1" relative="1" as="geometry">
+            <mxPoint x="-16" y="-10" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c-4m0Iis0QiZbfMw3R1k-2" value="" style="html=1;points=[[0,0,0,0,5],[0,1,0,0,-5],[1,0,0,0,5],[1,1,0,0,-5]];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;newEdgeStyle={&quot;curved&quot;:0,&quot;rounded&quot;:0};" vertex="1" parent="1">
+          <mxGeometry x="450" y="350" width="10" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="c-4m0Iis0QiZbfMw3R1k-3" value="密码验证" style="html=1;align=left;spacingLeft=2;endArrow=block;rounded=0;edgeStyle=orthogonalEdgeStyle;curved=0;rounded=0;" edge="1" target="c-4m0Iis0QiZbfMw3R1k-2" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="455" y="330" as="sourcePoint" />
+            <Array as="points">
+              <mxPoint x="485" y="360" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c-4m0Iis0QiZbfMw3R1k-4" value="返回密码" style="html=1;verticalAlign=bottom;endArrow=block;labelBackgroundColor=none;fontFamily=Verdana;fontSize=12;edgeStyle=elbowEdgeStyle;elbow=vertical;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="584.9999999999998" y="309.83" as="sourcePoint" />
+            <Array as="points">
+              <mxPoint x="460" y="309.83" />
+            </Array>
+            <mxPoint x="454.9999999999998" y="309.83" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c-4m0Iis0QiZbfMw3R1k-10" value="" style="html=1;points=[[0,0,0,0,5],[0,1,0,0,-5],[1,0,0,0,5],[1,1,0,0,-5]];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;newEdgeStyle={&quot;curved&quot;:0,&quot;rounded&quot;:0};" vertex="1" parent="1">
+          <mxGeometry x="290" y="420" width="10" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="c-4m0Iis0QiZbfMw3R1k-11" value="返回结果判断" style="html=1;align=left;spacingLeft=2;endArrow=block;rounded=0;edgeStyle=orthogonalEdgeStyle;curved=0;rounded=0;" edge="1" target="c-4m0Iis0QiZbfMw3R1k-10" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="295" y="400" as="sourcePoint" />
+            <Array as="points">
+              <mxPoint x="325" y="430" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c-4m0Iis0QiZbfMw3R1k-12" value="返回验证结果" style="html=1;verticalAlign=bottom;endArrow=block;labelBackgroundColor=none;fontFamily=Verdana;fontSize=12;edgeStyle=elbowEdgeStyle;elbow=vertical;entryX=0.9;entryY=0.537;entryDx=0;entryDy=0;entryPerimeter=0;exitX=-0.017;exitY=0.83;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1" source="7baba1c4bc27f4b0-13" target="7baba1c4bc27f4b0-10">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="440" y="391" as="sourcePoint" />
+            <mxPoint x="299.99999999999994" y="390" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c-4m0Iis0QiZbfMw3R1k-13" value="解锁/提示错误" style="html=1;verticalAlign=bottom;endArrow=block;labelBackgroundColor=none;fontFamily=Verdana;fontSize=12;edgeStyle=elbowEdgeStyle;elbow=vertical;entryX=1.042;entryY=0.683;entryDx=0;entryDy=0;entryPerimeter=0;exitX=0.021;exitY=0.768;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1" source="7baba1c4bc27f4b0-10" target="7baba1c4bc27f4b0-9">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="270" y="480" as="sourcePoint" />
+            <mxPoint x="169.99999999999991" y="480" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

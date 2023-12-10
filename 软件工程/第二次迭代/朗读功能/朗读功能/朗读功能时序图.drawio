@@ -1,0 +1,67 @@
+<mxfile host="app.diagrams.net" modified="2023-11-25T01:13:16.649Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36 Edg/119.0.0.0" etag="034zu9A1Vmnuq77-pkq7" version="22.1.3" type="device">
+  <diagram name="Page-1" id="c4acf3e9-155e-7222-9cf6-157b1a14988f">
+    <mxGraphModel dx="2236" dy="751" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" background="none" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="17acba5748e5396b-1" value="&lt;font style=&quot;font-size: 17px;&quot;&gt;朗读功能&lt;/font&gt;" style="shape=umlFrame;whiteSpace=wrap;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=10;align=center;width=100;height=50;" parent="1" vertex="1">
+          <mxGeometry x="-300" y="10" width="450" height="510" as="geometry" />
+        </mxCell>
+        <mxCell id="UoaARUUzv_gaAZ8Lk_7F-1" value="NoteExitActivity" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="-160" y="60" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="UoaARUUzv_gaAZ8Lk_7F-5" value="用户" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" parent="1" vertex="1">
+          <mxGeometry x="-250" y="70" width="30" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="UoaARUUzv_gaAZ8Lk_7F-12" value="" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="-110" y="220" width="20" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="UoaARUUzv_gaAZ8Lk_7F-21" value="" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="-110" y="320" width="20" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="UoaARUUzv_gaAZ8Lk_7F-24" value="" style="endArrow=none;dashed=1;html=1;dashPattern=1 3;strokeWidth=2;rounded=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;" parent="1" source="UoaARUUzv_gaAZ8Lk_7F-12" target="UoaARUUzv_gaAZ8Lk_7F-1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="110" y="360" as="sourcePoint" />
+            <mxPoint x="160" y="310" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="UoaARUUzv_gaAZ8Lk_7F-25" value="" style="endArrow=none;dashed=1;html=1;dashPattern=1 3;strokeWidth=2;rounded=0;" parent="1" target="UoaARUUzv_gaAZ8Lk_7F-5" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-240" y="500" as="sourcePoint" />
+            <mxPoint x="150" y="320" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="UoaARUUzv_gaAZ8Lk_7F-26" value="" style="endArrow=classic;html=1;rounded=0;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-230" y="220" as="sourcePoint" />
+            <mxPoint x="-110" y="220" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="UoaARUUzv_gaAZ8Lk_7F-27" value="选中文本" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="-210" y="190" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="UoaARUUzv_gaAZ8Lk_7F-29" value="" style="endArrow=classic;html=1;rounded=0;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-240" y="320" as="sourcePoint" />
+            <mxPoint x="-110" y="320" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="UoaARUUzv_gaAZ8Lk_7F-30" value="点击朗读选项" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="-210" y="280" width="80" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="UoaARUUzv_gaAZ8Lk_7F-34" value="显示朗读选项" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="-50" y="200" width="90" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="UoaARUUzv_gaAZ8Lk_7F-36" value="输出语音" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="-40" y="300" width="80" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="UoaARUUzv_gaAZ8Lk_7F-45" value="" style="endArrow=none;dashed=1;html=1;dashPattern=1 3;strokeWidth=2;rounded=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;" parent="1" source="UoaARUUzv_gaAZ8Lk_7F-21" target="UoaARUUzv_gaAZ8Lk_7F-12" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="100" y="370" as="sourcePoint" />
+            <mxPoint x="150" y="320" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
